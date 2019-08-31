@@ -1,5 +1,10 @@
 # GrammaticalNumber
 
+Turning singular words to plural can be [very hard](https://en.wikipedia.org/wiki/English_plurals) in some spoken languages, while other languages have [simple rules](https://en.wikipedia.org/wiki/Turkish_grammar#Inflectional_suffixes).
+
+`GrammaticalNumber` is heavily inspired by [`ActiveSupport::Inflector`](https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflections.rb) known from the [Ruby on Rails](https://rubyonrails.org) web framework.
+
+
 ## Usage
 
 ### Turn singular words to plural
@@ -40,9 +45,20 @@
 "grandchildren".singularized()      // grandchild
 ```
 
+### Case Sensitivity
+
+`GrammaticalNumber` will try to match the letter casing of your input word.
+Lowercased, uppercased and capitalized words are supported.
+
+```swift
+"tooth".pluralized()                // teeth
+"TOOTH".pluralized()                // TOOTH
+"Tooth".pluralized()                // Teeth
+```
+
 ### Add count to words
 
-Prepends the given `String` with `count`.
+Prepends the pluralized `String` with `count`.
 If the `count` is `0`, the singular word will be used. 
 
 ```swift
@@ -99,3 +115,30 @@ Turns `matrices` to `matrix`.
 ```swift
 GrammaticalNumberRule.add(rule)
 ```
+
+## Support other languages
+
+In order to support other languages, pass the `language` parameter to your custom rules.
+Call `.pluralized(language: yourLanguage)` with the same `language` value — like so: `.pluralized(language: "tr")`
+
+### Example for the turkish language (`tr`)
+
+```swift
+GrammaticalNumberRule.add(.plural(#"([aoıu][^aoıueöiü]{0,6})$"#, #"$1lar"#), language: "tr")
+GrammaticalNumberRule.add(.plural(#"([eöiü][^aoıueöiü]{0,6})$"#, #"$1ler"#), language: "tr")
+GrammaticalNumberRule.add(.singular(#"l[ae]r$"#, #""#), language: "tr")
+```
+
+```swift
+"kitap".pluralized(language: "tr")              // kitaplar
+"yemek".pluralized(language: "tr")              // yemekler
+```
+
+## Contact
+
+* Devran "Cosmo" Uenal
+* Twitter: [@maccosmo](http://twitter.com/maccosmo)
+
+## License
+
+GrammaticalNumber is released under the [MIT License](http://www.opensource.org/licenses/MIT).
