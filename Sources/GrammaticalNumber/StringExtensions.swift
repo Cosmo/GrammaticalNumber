@@ -6,7 +6,7 @@ extension String {
         return [String(count), self].joined(separator: " ")
     }
     
-    func pluralized(count: Int? = nil, language: String = GrammaticalNumberRule.defaultLanguage) -> String {
+    public func pluralized(count: Int? = nil, language: String = GrammaticalNumberRule.defaultLanguage) -> String {
         var word = self
         
         if count == 1 {
@@ -38,7 +38,7 @@ extension String {
         return word.prependCount(count)
     }
     
-    func singularized(language: String = GrammaticalNumberRule.defaultLanguage) -> String {
+    public func singularized(language: String = GrammaticalNumberRule.defaultLanguage) -> String {
         guard let rules = GrammaticalNumberRule.rules[language] else {
             return self
         }

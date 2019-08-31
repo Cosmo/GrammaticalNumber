@@ -7,26 +7,26 @@
 
 import Foundation
 
-enum GrammaticalNumberRule {
+public enum GrammaticalNumberRule {
     case plural(_ rule: String, _ replacement: String)
     case singular(_ rule: String, _ replacement: String)
     case irregular(_ singular: String, _ plural: String)
     case uncountable(_ rule: String)
     
-    static var defaultLanguage = "en"
+    public static var defaultLanguage = "en"
     
-    static func add(_ rule: GrammaticalNumberRule, language: String = defaultLanguage) {
+    public static func add(_ rule: GrammaticalNumberRule, language: String = defaultLanguage) {
         if rules[language] == nil {
             rules[language] = []
         }
         rules[language]?.append(rule)
     }
     
-    static func clear() {
+    public static func clear() {
         rules = [:]
     }
     
-    static var rules: [String: [GrammaticalNumberRule]] = [
+    public static var rules: [String: [GrammaticalNumberRule]] = [
         defaultLanguage: [
             .plural(#"$"#, "s"),
             .plural(#"s$"#, "s"),
