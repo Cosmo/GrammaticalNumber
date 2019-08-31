@@ -57,11 +57,24 @@ final class GrammaticalNumberTests: XCTestCase {
         XCTAssertEqual("bug".pluralized(), "features")
     }
     
-    func testCustomLanguageRules() {
+    func testCustomGermanRules() {
         let rule = GrammaticalNumberRule.plural("album", "alben")
         GrammaticalNumberRule.add(rule, language: "de")
         
         XCTAssertEqual("album".pluralized(language: "de"), "alben")
+    }
+    
+    func testCustomTurkishRules() {
+        GrammaticalNumberRule.add(.plural(#"([aoıu][^aoıueöiü]{0,6})$"#, #"$1lar"#), language: "tr")
+        GrammaticalNumberRule.add(.plural(#"([eöiü][^aoıueöiü]{0,6})$"#, #"$1ler"#), language: "tr")
+        GrammaticalNumberRule.add(.singular(#"l[ae]r$"#, #""#), language: "tr")
+        
+        XCTAssertEqual("koltuk".pluralized(language: "tr"), "koltuklar")
+        XCTAssertEqual("kitap".pluralized(language: "tr"), "kitaplar")
+        XCTAssertEqual("domates".pluralized(language: "tr"), "domatesler")
+        XCTAssertEqual("yemek".pluralized(language: "tr"), "yemekler")
+        XCTAssertEqual("yemekler".singularized(language: "tr"), "yemek")
+        XCTAssertEqual("dolaplar".singularized(language: "tr"), "dolap")
     }
     
     func testCaseSensitivity() {
@@ -97,6 +110,8 @@ final class GrammaticalNumberTests: XCTestCase {
         ("testSingulars", testSingulars),
         ("testCounts", testCounts),
         ("testCustomRules", testCustomRules),
+        ("testCustomGermanRules", testCustomGermanRules),
+        ("testCustomTurkishRules", testCustomTurkishRules),
         ("testCaseSensitivity", testCaseSensitivity),
         ("testCaseMatching", testCaseMatching),
     ]
