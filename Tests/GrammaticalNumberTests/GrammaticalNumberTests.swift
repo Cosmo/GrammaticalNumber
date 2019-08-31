@@ -22,7 +22,7 @@ final class GrammaticalNumberTests: XCTestCase {
         XCTAssertEqual("man".pluralized(), "men")
         XCTAssertEqual("ox".pluralized(), "oxen")
         XCTAssertEqual("radius".pluralized(), "radii")
-        XCTAssertEqual("sub-child".pluralized(), "sub-children")
+        XCTAssertEqual("grandchild".pluralized(), "grandchildren")
     }
     
     func testSingulars() {
@@ -33,7 +33,7 @@ final class GrammaticalNumberTests: XCTestCase {
         XCTAssertEqual("teeth".singularized(), "tooth")
         XCTAssertEqual("axes".singularized(), "axis")
         XCTAssertEqual("women".singularized(), "woman")
-        XCTAssertEqual("sub-children".singularized(), "sub-child")
+        XCTAssertEqual("grandchildren".singularized(), "grandchild")
     }
     
     func testCounts() {
@@ -63,12 +63,41 @@ final class GrammaticalNumberTests: XCTestCase {
         
         XCTAssertEqual("album".pluralized(language: "de"), "alben")
     }
+    
+    func testCaseSensitivity() {
+        XCTAssertEqual("matrix".pluralized(), "matrices")
+        XCTAssertEqual("Matrix".pluralized(), "Matrices")
+        XCTAssertEqual("MATRIX".pluralized(), "MATRICES")
+        
+        XCTAssertEqual("sheep".pluralized(count: 0), "0 sheep")
+        XCTAssertEqual("Sheep".pluralized(count: 0), "0 Sheep")
+        XCTAssertEqual("SHEEP".pluralized(count: 0), "0 SHEEP")
+        
+        XCTAssertEqual("knife".pluralized(count: 0), "0 knives")
+        XCTAssertEqual("Knife".pluralized(count: 0), "0 Knives")
+        XCTAssertEqual("KNIFE".pluralized(count: 0), "0 KNIVES")
+        
+        XCTAssertEqual("teeth".singularized(), "tooth")
+        XCTAssertEqual("Teeth".singularized(), "Tooth")
+        XCTAssertEqual("TEETH".singularized(), "TOOTH")
+        
+        XCTAssertEqual("child".pluralized(), "children")
+        XCTAssertEqual("Child".pluralized(), "Children")
+        XCTAssertEqual("CHILD".pluralized(), "CHILDREN")
+    }
+    
+    func testCaseMatching() {
+        XCTAssertEqual("child".matchCase("CHILD"), "CHILD")
+        XCTAssertEqual("Child".matchCase("Child"), "Child")
+        XCTAssertEqual("children".matchCase("Children"), "Children")
+    }
 
     static var allTests = [
         ("testPlurals", testPlurals),
         ("testSingulars", testSingulars),
         ("testCounts", testCounts),
         ("testCustomRules", testCustomRules),
-        ("testCustomLanguageRules", testCustomLanguageRules),
+        ("testCaseSensitivity", testCaseSensitivity),
+        ("testCaseMatching", testCaseMatching),
     ]
 }

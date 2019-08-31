@@ -10,11 +10,11 @@ extension String {
         var word = self
         
         if count == 1 {
-            return word.prependCount(count)
+            return word.matchCase(self).prependCount(count)
         }
         
         guard let rules = GrammaticalNumberRule.rules[language] else {
-            return word.prependCount(count)
+            return word.matchCase(self).prependCount(count)
         }
         
         guard let rule = (rules.reversed().first { grammaticalNumberRule -> Bool in
@@ -26,7 +26,7 @@ extension String {
             default: return false
             }
         }) else {
-            return word.prependCount(count)
+            return word.matchCase(self).prependCount(count)
         }
         
         switch rule {
@@ -35,10 +35,12 @@ extension String {
         default: break
         }
         
-        return word.prependCount(count)
+        return word.matchCase(self).prependCount(count)
     }
     
     public func singularized(language: String = GrammaticalNumberRule.defaultLanguage) -> String {
+        var word = self
+        
         guard let rules = GrammaticalNumberRule.rules[language] else {
             return self
         }
@@ -52,14 +54,26 @@ extension String {
             default: return false
             }
         }) else {
-            return self
+            return word
         }
         
         switch rule {
         case .irregular(let replacement, let rule), .singular(let rule, let replacement):
-            return self.replacingOccurrences(of: rule, with: replacement, options: [.regularExpression, .caseInsensitive])
-        default:
-            return self
+            word = word.replacingOccurrences(of: rule, with: replacement, options: [.regularExpression, .caseInsensitive])
+        default: break
         }
+        
+        return word.matchCase(self)
+    }
+    
+    func matchCase(_ input: String) -> String {
+        if input.allSatisfy({ $0.isUppercase }) {
+            return self.uppercased()
+        } else if input.allSatisfy({ $0.isLowercase }) {
+            return self.lowercased()
+        } else if let first = input.first, first.isUppercase {
+            return self.capitalized
+        }
+        return self
     }
 }
